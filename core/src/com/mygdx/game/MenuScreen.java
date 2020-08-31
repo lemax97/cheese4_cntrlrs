@@ -60,4 +60,12 @@ public class MenuScreen extends BaseScreen
     {   
 
     }
+
+    @Override
+    public boolean buttonDown(Controller controller, int buttonCode) {
+        if (buttonCode == XBoxGamepad.BUTTON_START)
+            game.setScreen( new GameScreen(game));
+
+        return false;
+    }
 }

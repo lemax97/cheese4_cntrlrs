@@ -20,6 +20,7 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.math.*;
+import com.badlogic.gdx.controllers.*;
 
 public class GameScreen extends BaseScreen
 {
@@ -109,16 +110,31 @@ public class GameScreen extends BaseScreen
     }
 
     public void update(float dt) 
-    {   
-        mousey.setAccelerationXY(0,0);
-        if (Gdx.input.isKeyPressed(Keys.LEFT)) 
-            mousey.addAccelerationXY(-100,0);
-        if (Gdx.input.isKeyPressed(Keys.RIGHT))
-            mousey.addAccelerationXY(100,0);
-        if (Gdx.input.isKeyPressed(Keys.UP)) 
-            mousey.addAccelerationXY(0,100);
-        if (Gdx.input.isKeyPressed(Keys.DOWN)) 
-            mousey.addAccelerationXY(0,-100);
+    {
+        float accelerate = 100.0f;
+        if (Controllers.getControllers().size > 0){
+            Controller gamepad = Controllers.getControllers().get(0);
+            float xAxis = gamepad.getAxis(XBoxGamepad.AXIS_LEFT_X);
+            float yAxis = - gamepad.getAxis(XBoxGamepad.AXIS_LEFT_Y);
+            float deadZone = 0.15f;
+            if (Math.abs(xAxis) < deadZone)
+                xAxis = 0;
+            if (Math.abs(yAxis) < deadZone)
+                yAxis = 0;
+            mousey.setAccelerationXY( xAxis * accelerate, yAxis * accelerate);
+        }
+        else {
+            mousey.setAccelerationXY(0,0);
+            if (Gdx.input.isKeyPressed(Keys.LEFT))
+                mousey.addAccelerationXY(-accelerate,0);
+            if (Gdx.input.isKeyPressed(Keys.RIGHT))
+                mousey.addAccelerationXY(accelerate,0);
+            if (Gdx.input.isKeyPressed(Keys.UP))
+                mousey.addAccelerationXY(0,accelerate);
+            if (Gdx.input.isKeyPressed(Keys.DOWN))
+                mousey.addAccelerationXY(0,-accelerate);
+        }
+
 
         // set correct animation
         if ( mousey.getSpeed() > 1 && mousey.getAnimationName().equals("stop") )
@@ -184,4 +200,14 @@ public class GameScreen extends BaseScreen
 
         return false;
     }
+
+    @Override
+    public boolean buttonDown(Controller controller, int buttonCode) {
+        if (buttonCode == XBoxGamepad.BUTTON_X)
+            togglePaused();
+
+        return false;
+    }
+
+
 }

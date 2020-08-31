@@ -10,8 +10,9 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.controllers.*;
 
-public abstract class BaseScreen implements Screen, InputProcessor
+public abstract class BaseScreen implements Screen, InputProcessor, ControllerListener
 {
     protected BaseGame game;
 
@@ -40,6 +41,9 @@ public abstract class BaseScreen implements Screen, InputProcessor
 
         InputMultiplexer im = new InputMultiplexer(this, uiStage, mainStage);
         Gdx.input.setInputProcessor( im );
+
+        Controllers.clearListeners();
+        Controllers.addListener(this);
         
         create();
     }
@@ -119,4 +123,49 @@ public abstract class BaseScreen implements Screen, InputProcessor
 
     public boolean touchUp(int screenX, int screenY, int pointer, int button) 
     {  return false;  }
+
+    @Override
+    public void connected(Controller controller) {
+
+    }
+
+    @Override
+    public void disconnected(Controller controller) {
+
+    }
+
+    @Override
+    public boolean buttonDown(Controller controller, int buttonCode) {
+        return false;
+    }
+
+    @Override
+    public boolean buttonUp(Controller controller, int buttonCode) {
+        return false;
+    }
+
+    @Override
+    public boolean axisMoved(Controller controller, int axisCode, float value) {
+        return false;
+    }
+
+    @Override
+    public boolean povMoved(Controller controller, int povCode, PovDirection value) {
+        return false;
+    }
+
+    @Override
+    public boolean xSliderMoved(Controller controller, int sliderCode, boolean value) {
+        return false;
+    }
+
+    @Override
+    public boolean ySliderMoved(Controller controller, int sliderCode, boolean value) {
+        return false;
+    }
+
+    @Override
+    public boolean accelerometerMoved(Controller controller, int accelerometerCode, Vector3 value) {
+        return false;
+    }
 }
